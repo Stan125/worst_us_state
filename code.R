@@ -51,5 +51,8 @@ plot <- ggplot(most_used_states, aes(x = word, y = n)) +
        subtitle = "Most mentioned states in AskReddit threat 'What is the worst state in the US and why?'") +
   coord_flip() +
   scale_x_discrete(limits = rev(levels(most_used_states$word))) +
-  scale_y_continuous(breaks = seq(0, 2800, by = 500))
+  scale_y_continuous(breaks = seq(0, 2800, by = 500)) +
+  annotate("text", x = "hawaii", y = 3200, label = "twitter.com/stadlmann_",
+           hjust=1.1, vjust=-1.1, col="black", cex=6,
+           fontface = "bold", alpha = 0.3)
 ggsave(plot, filename = "worst_US_state.png", height = 7, width = 7)
