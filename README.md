@@ -3,5 +3,5 @@ Analysis of the Reddit thread: 'What is the worst state in the United States and
 Resulting plot:
 
 
-![Plot](worst_us_state.png "Worst US state")
+![Plot](worst_US_state.png "Worst US state")
 
