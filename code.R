@@ -2,6 +2,7 @@ library(jsonlite)
 library(tidytext)
 library(datasets)
 library(ggplot2)
+library(dplyr)
 
 ### Which is the worst US state? ###
 id_query <- "https://api.pushshift.io/reddit/submission/comment_ids/8822nf"
@@ -30,18 +31,18 @@ all_comms <- sapply(results, FUN = function(x) {
 })
 all_comms <- unlist(all_comms)
 comms_df <- data.frame(comment = all_comms, stringsAsFactors = FALSE)
-raw_comms <- as_tibble(unnest_tokens(comms_df, output = word, input = comment))
+raw_comms <- as_tibble(unnest_tokens(comms_df, output = word, input = comment,
+                                     token = "ngrams", n = 2, n_min = 1))
 
 # Sort the data.frame
 most_used <- raw_comms %>%
-  mutate(word = tolower(word)) %>%
   count(word, sort = TRUE)
 
 # find US states
 most_used_states <- most_used %>%
   filter(word %in% tolower(state.name)) %>%
   arrange(desc(n)) %>%
-  mutate(word = factor(word, levels = unique(most_used_states$word)))
+  mutate(word = factor(word, levels = unique(word)))
 
 # GGplot
 plot <- ggplot(most_used_states, aes(x = word, y = n)) +
@@ -51,7 +52,7 @@ plot <- ggplot(most_used_states, aes(x = word, y = n)) +
        subtitle = "Most mentioned states in AskReddit threat 'What is the worst state in the US and why?'") +
   coord_flip() +
   scale_x_discrete(limits = rev(levels(most_used_states$word))) +
-  scale_y_continuous(breaks = seq(0, 2800, by = 500)) +
+  scale_y_continuous(breaks = seq(0, 3000, by = 500)) +
   annotate("text", x = "hawaii", y = 3200, label = "twitter.com/stadlmann_",
            hjust=1.1, vjust=-1.1, col="black", cex=6,
            fontface = "bold", alpha = 0.3)
